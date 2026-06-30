@@ -1,5 +1,7 @@
 # Transcom LMS API
 
+[![Development Status](https://img.shields.io/badge/status-active-success.svg)](#)
+
 ASP.NET Core Web API backend for the Transcom Learning Management System (LMS).
 
 ## Prerequisites
