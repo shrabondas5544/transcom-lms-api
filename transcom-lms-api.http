@@ -1,6 +1,3 @@
 @transcom_lms_api_HostAddress = http://localhost:5276
 
-GET {{transcom_lms_api_HostAddress}}/weatherforecast/
-Accept: application/json
 
-###
