@@ -114,5 +114,20 @@ namespace transcom_lms_api.Models
         [Required]
         [MaxLength(255)]
         public string PasswordHash { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string EmpStat { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string GradeGroup { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string JobGrade { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string EqGrade { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string ConfirmDate { get; set; } = string.Empty;
     }
 }
