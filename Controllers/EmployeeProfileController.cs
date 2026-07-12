@@ -309,11 +309,70 @@ namespace transcom_lms_api.Controllers
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllProfiles()
+        public async Task<IActionResult> GetAllProfiles(
+            [FromQuery] string? search,
+            [FromQuery] string? department,
+            [FromQuery] string? designation,
+            [FromQuery] string? location,
+            [FromQuery] string? jobGrade,
+            [FromQuery] string? eqGrade,
+            [FromQuery] string? empStatus,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var profiles = await _context.EmployeeProfiles.ToListAsync();
-            var educationsList = await _context.EmployeeEducations.ToListAsync();
-            var documentsList = await _context.EmployeeDocuments.ToListAsync();
+            var query = _context.EmployeeProfiles.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var s = search.Trim().ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(s) || p.EmployeeCode.ToLower().Contains(s));
+            }
+
+            if (!string.IsNullOrWhiteSpace(department) && department != "ALL")
+            {
+                query = query.Where(p => p.Department == department);
+            }
+
+            if (!string.IsNullOrWhiteSpace(designation) && designation != "ALL")
+            {
+                query = query.Where(p => p.Designation == designation);
+            }
+
+            if (!string.IsNullOrWhiteSpace(location) && location != "ALL")
+            {
+                query = query.Where(p => p.Showroom == location);
+            }
+
+            if (!string.IsNullOrWhiteSpace(jobGrade) && jobGrade != "ALL")
+            {
+                query = query.Where(p => p.JobGrade == jobGrade);
+            }
+
+            if (!string.IsNullOrWhiteSpace(eqGrade) && eqGrade != "ALL")
+            {
+                query = query.Where(p => p.EqGrade == eqGrade);
+            }
+
+            if (!string.IsNullOrWhiteSpace(empStatus) && empStatus != "ALL")
+            {
+                query = query.Where(p => p.EmpStat == empStatus);
+            }
+
+            var totalCount = await query.CountAsync();
+            
+            var profiles = await query
+                .OrderBy(p => p.EmployeeCode)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var profileIds = profiles.Select(p => p.Id).ToList();
+            var educationsList = await _context.EmployeeEducations
+                .Where(e => profileIds.Contains(e.EmployeeProfileId))
+                .ToListAsync();
+            var documentsList = await _context.EmployeeDocuments
+                .Where(d => profileIds.Contains(d.EmployeeProfileId))
+                .ToListAsync();
 
             var result = profiles.Select(profile =>
             {
@@ -328,6 +387,7 @@ namespace transcom_lms_api.Controllers
 
                 return new
                 {
+                    id = profile.Id,
                     code = profile.EmployeeCode,
                     name = profile.Name,
                     department = profile.Department,
@@ -343,9 +403,73 @@ namespace transcom_lms_api.Controllers
                     completion = completion,
                     isVerified = isVerified
                 };
-            }).OrderBy(e => e.code).ToList();
+            }).ToList();
 
-            return Ok(result);
+            return Ok(new
+            {
+                totalCount,
+                page,
+                pageSize,
+                totalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                items = result
+            });
+        }
+
+        [HttpGet("distinct-filters")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetDistinctFilters()
+        {
+            var departments = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.Department))
+                .Select(p => p.Department)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToListAsync();
+
+            var designations = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.Designation))
+                .Select(p => p.Designation)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToListAsync();
+
+            var locations = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.Showroom))
+                .Select(p => p.Showroom)
+                .Distinct()
+                .OrderBy(l => l)
+                .ToListAsync();
+
+            var jobGrades = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.JobGrade))
+                .Select(p => p.JobGrade)
+                .Distinct()
+                .OrderBy(g => g)
+                .ToListAsync();
+
+            var eqGrades = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.EqGrade))
+                .Select(p => p.EqGrade)
+                .Distinct()
+                .OrderBy(e => e)
+                .ToListAsync();
+
+            var employeeStatuses = await _context.EmployeeProfiles
+                .Where(p => !string.IsNullOrEmpty(p.EmpStat))
+                .Select(p => p.EmpStat)
+                .Distinct()
+                .OrderBy(s => s)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                departments,
+                designations,
+                locations,
+                jobGrades,
+                eqGrades,
+                employeeStatuses
+            });
         }
 
         /// <summary>
