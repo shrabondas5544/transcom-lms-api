@@ -22,6 +22,18 @@ namespace transcom_lms_api.Data
         // Represents the database table containing employee uploaded documents
         public DbSet<EmployeeDocument> EmployeeDocuments { get; set; }
 
+        // Represents the database table containing showroom visit evaluations
+        public DbSet<ShowroomVisitEvaluation> ShowroomVisitEvaluations { get; set; }
+
+        // Represents the database table containing location geofences
+        public DbSet<LocationGeofence> LocationGeofences { get; set; }
+
+        // Represents the database table containing official accepted attendance records
+        public DbSet<AttendanceLog> AttendanceLogs { get; set; }
+
+        // Represents the database table containing attendance selfie validation attempts
+        public DbSet<AttendanceValidationAttempt> AttendanceValidationAttempts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -35,6 +47,26 @@ namespace transcom_lms_api.Data
 
             modelBuilder.Entity<EmployeeDocument>()
                 .ToTable("EmployeeDocuments");
+
+            modelBuilder.Entity<ShowroomVisitEvaluation>()
+                .ToTable("ShowroomVisitEvaluations");
+
+            modelBuilder.Entity<LocationGeofence>()
+                .ToTable("LocationGeofences");
+
+            modelBuilder.Entity<LocationGeofence>()
+                .HasIndex(l => l.LocationName)
+                .IsUnique();
+
+            modelBuilder.Entity<AttendanceLog>()
+                .ToTable("AttendanceLogs");
+
+            modelBuilder.Entity<AttendanceLog>()
+                .HasIndex(a => new { a.EmployeeId, a.LogDate })
+                .IsUnique();
+
+            modelBuilder.Entity<AttendanceValidationAttempt>()
+                .ToTable("AttendanceValidationAttempts");
         }
     }
 }
