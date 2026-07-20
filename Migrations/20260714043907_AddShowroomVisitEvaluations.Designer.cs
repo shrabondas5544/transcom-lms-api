@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using transcom_lms_api.Data;
@@ -11,9 +12,11 @@ using transcom_lms_api.Data;
 namespace transcom_lms_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260714043907_AddShowroomVisitEvaluations")]
+    partial class AddShowroomVisitEvaluations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,70 +24,6 @@ namespace transcom_lms_api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("transcom_lms_api.Models.AttendanceLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ArrivalTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DepartureTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsPresent")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LogDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EmployeeId", "LogDate")
-                        .IsUnique();
-
-                    b.ToTable("AttendanceLogs", (string)null);
-                });
-
-            modelBuilder.Entity("transcom_lms_api.Models.AttendanceValidationAttempt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AttemptTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsSuccessfulCheckIn")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SelfieUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<double>("SubmittedLatitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("SubmittedLongitude")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AttendanceValidationAttempts", (string)null);
-                });
 
             modelBuilder.Entity("transcom_lms_api.Models.EmployeeDocument", b =>
                 {
@@ -215,29 +154,10 @@ namespace transcom_lms_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AvatarImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("AvatarScale")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("AvatarX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("AvatarY")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("BloodType")
                         .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
-
-                    b.Property<bool>("CanConductAudit")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("CanTakeAssessment")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ConfirmDate")
                         .IsRequired()
@@ -306,9 +226,6 @@ namespace transcom_lms_api.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("IsAssessor")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("JobGrade")
                         .IsRequired()
@@ -399,36 +316,6 @@ namespace transcom_lms_api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EmployeeProfiles", (string)null);
-                });
-
-            modelBuilder.Entity("transcom_lms_api.Models.LocationGeofence", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AllowedRadiusMeters")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("LocationName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationName")
-                        .IsUnique();
-
-                    b.ToTable("LocationGeofences", (string)null);
                 });
 
             modelBuilder.Entity("transcom_lms_api.Models.ShowroomVisitEvaluation", b =>

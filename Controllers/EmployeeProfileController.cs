@@ -80,7 +80,14 @@ namespace transcom_lms_api.Controllers
                 Facebook = profile.Facebook,
                 Instagram = profile.Instagram,
                 XLink = profile.XLink,
-                Linkedin = profile.Linkedin
+                Linkedin = profile.Linkedin,
+                AvatarImage = profile.AvatarImage,
+                AvatarScale = profile.AvatarScale,
+                AvatarX = profile.AvatarX,
+                AvatarY = profile.AvatarY,
+                IsAssessor = profile.IsAssessor,
+                CanTakeAssessment = profile.CanTakeAssessment,
+                CanConductAudit = profile.CanConductAudit
             };
 
             var ssc = educations.FirstOrDefault(e => e.Level == "SSC") ?? new();
@@ -193,6 +200,13 @@ namespace transcom_lms_api.Controllers
             profile.XLink = dto.XLink;
             profile.Linkedin = dto.Linkedin;
             profile.MaritalStatus = dto.MaritalStatus;
+            profile.AvatarImage = dto.AvatarImage;
+            profile.AvatarScale = dto.AvatarScale;
+            profile.AvatarX = dto.AvatarX;
+            profile.AvatarY = dto.AvatarY;
+            profile.IsAssessor = dto.IsAssessor;
+            profile.CanTakeAssessment = dto.CanTakeAssessment;
+            profile.CanConductAudit = dto.CanConductAudit;
 
             // Handle date conversions safely
             if (DateTime.SpecifyKind(DateTime.TryParse(dto.Dob, out var parsedDob) ? parsedDob : DateTime.MinValue, DateTimeKind.Utc) != DateTime.MinValue)
@@ -304,6 +318,33 @@ namespace transcom_lms_api.Controllers
         }
 
         /// <summary>
+        /// Updates the assessor configuration for a specific employee profile.
+        /// PUT /api/EmployeeProfile/{id}/assessor-status
+        /// </summary>
+        [HttpPut("{id}/assessor-status")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAssessorStatus(int id, [FromBody] AssessorStatusUpdateDto dto)
+        {
+            var profile = await _context.EmployeeProfiles
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (profile == null)
+            {
+                return NotFound(new { message = $"Employee profile with ID {id} not found." });
+            }
+
+            profile.IsAssessor = dto.IsAssessor;
+            profile.CanTakeAssessment = dto.IsAssessor && dto.CanTakeAssessment;
+            profile.CanConductAudit = dto.IsAssessor && dto.CanConductAudit;
+
+            _context.Entry(profile).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Retrieves all employee profiles in the database with computed completion metrics.
         /// GET /api/EmployeeProfile
         /// </summary>
@@ -401,7 +442,14 @@ namespace transcom_lms_api.Controllers
                     locationOutlet = profile.Showroom,
                     confirmDate = profile.ConfirmDate,
                     completion = completion,
-                    isVerified = isVerified
+                    isVerified = isVerified,
+                    avatarImage = profile.AvatarImage,
+                    avatarScale = profile.AvatarScale,
+                    avatarX = profile.AvatarX,
+                    avatarY = profile.AvatarY,
+                    isAssessor = profile.IsAssessor,
+                    canTakeAssessment = profile.CanTakeAssessment,
+                    canConductAudit = profile.CanConductAudit
                 };
             }).ToList();
 
@@ -681,5 +729,12 @@ namespace transcom_lms_api.Controllers
         public string EqGrade { get; set; } = string.Empty;
         public string LocationOutlet { get; set; } = string.Empty;
         public string ConfirmDate { get; set; } = string.Empty;
+    }
+
+    public class AssessorStatusUpdateDto
+    {
+        public bool IsAssessor { get; set; }
+        public bool CanTakeAssessment { get; set; }
+        public bool CanConductAudit { get; set; }
     }
 }

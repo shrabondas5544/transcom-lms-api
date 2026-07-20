@@ -129,5 +129,14 @@ namespace transcom_lms_api.Models
 
         [MaxLength(100)]
         public string ConfirmDate { get; set; } = string.Empty;
+
+        public string AvatarImage { get; set; } = string.Empty;
+        public double AvatarScale { get; set; } = 1.0;
+        public double AvatarX { get; set; } = 0.0;
+        public double AvatarY { get; set; } = 0.0;
+
+        public bool IsAssessor { get; set; } = false;
+        public bool CanTakeAssessment { get; set; } = false;
+        public bool CanConductAudit { get; set; } = false;
     }
 }

@@ -181,7 +181,10 @@ namespace transcom_lms_api.Controllers
                 Email = profile.Email,
                 Designation = profile.Designation,
                 Showroom = profile.Showroom,
-                IsVerified = isVerified
+                IsVerified = isVerified,
+                IsAssessor = profile.IsAssessor,
+                CanTakeAssessment = profile.CanTakeAssessment,
+                CanConductAudit = profile.CanConductAudit
             });
         }
 
@@ -223,5 +226,8 @@ namespace transcom_lms_api.Controllers
         public string Designation { get; set; } = string.Empty;
         public string Showroom { get; set; } = string.Empty;
         public bool IsVerified { get; set; }
+        public bool IsAssessor { get; set; }
+        public bool CanTakeAssessment { get; set; }
+        public bool CanConductAudit { get; set; }
     }
 }

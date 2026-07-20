@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using transcom_lms_api.Data;
@@ -11,9 +12,11 @@ using transcom_lms_api.Data;
 namespace transcom_lms_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260716083002_AddAvatarToProfile")]
+    partial class AddAvatarToProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,12 +236,6 @@ namespace transcom_lms_api.Migrations
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
 
-                    b.Property<bool>("CanConductAudit")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("CanTakeAssessment")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("ConfirmDate")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -306,9 +303,6 @@ namespace transcom_lms_api.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("IsAssessor")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("JobGrade")
                         .IsRequired()

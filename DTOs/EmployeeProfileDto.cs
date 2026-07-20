@@ -47,6 +47,15 @@ namespace transcom_lms_api.DTOs
 
         // Nested documents details
         public DocumentsDetailsDto Documents { get; set; } = new();
+
+        public string AvatarImage { get; set; } = string.Empty;
+        public double AvatarScale { get; set; } = 1.0;
+        public double AvatarX { get; set; } = 0.0;
+        public double AvatarY { get; set; } = 0.0;
+
+        public bool IsAssessor { get; set; }
+        public bool CanTakeAssessment { get; set; }
+        public bool CanConductAudit { get; set; }
     }
 
     public class EducationSSCDetailsDto

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using transcom_lms_api.Data;
@@ -11,9 +12,11 @@ using transcom_lms_api.Data;
 namespace transcom_lms_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260714062755_AddAttendanceInfrastructureAndAuditLogs")]
+    partial class AddAttendanceInfrastructureAndAuditLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,29 +218,10 @@ namespace transcom_lms_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AvatarImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("AvatarScale")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("AvatarX")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("AvatarY")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("BloodType")
                         .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
-
-                    b.Property<bool>("CanConductAudit")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("CanTakeAssessment")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ConfirmDate")
                         .IsRequired()
@@ -306,9 +290,6 @@ namespace transcom_lms_api.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("IsAssessor")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("JobGrade")
                         .IsRequired()
